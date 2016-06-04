@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+
 	"github.com/butlermatt/gmud/lib"
 )
 
@@ -17,7 +18,7 @@ type Player interface {
 	Quit()
 }
 
-// Commands should implement this interface.
+// Commander should be implemented for all commands.
 type Commander interface {
 	// Exec executes the command.
 	Exec()
@@ -25,6 +26,10 @@ type Commander interface {
 	Name() string
 	// Help returns a formatted help string for the command.
 	Help() string
+	// Log returns true if usage of this command should be logged.
+	Log() bool
+	// Player returns the Player of this command.
+	Player() Player
 }
 
 type execFunc func(user Player, args []string) (ok bool)
@@ -37,6 +42,7 @@ type Command struct {
 	User Player
 	exec execFunc
 	args []string
+	log  bool
 }
 
 // Name returns the command name
@@ -54,6 +60,16 @@ func (c Command) Exec() {
 // Help returns a formatted help string for the command.
 func (c Command) Help() string {
 	return fmt.Sprintf("%s\n\t%s", c.name, c.help)
+}
+
+// Log returns true if usage of this command should be logged.
+func (c Command) Log() bool {
+	return c.log
+}
+
+// Player returns the player that is executing this command.
+func (c Command) Player() Player {
+	return c.User
 }
 
 var commands = make(map[string]Command)

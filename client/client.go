@@ -119,6 +119,7 @@ func Handle(conn net.Conn, rm, add chan<- *Client, msg chan<- command.Commander)
 		log.Println("Error getting name")
 		return
 	}
+	log.Printf("%v logged in as %s", client.Conn.RemoteAddr(), name)
 	client.name = name
 	add <- client
 

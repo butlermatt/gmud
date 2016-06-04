@@ -43,11 +43,13 @@ func Run(addr string) {
 
 	go acceptConnections(srv, rm, add, msg)
 
-	var shutdown bool = false
+	var shutdown = false
 	for {
 		select {
 		case cmd := <-msg:
-			log.Printf("Received: %s", cmd.Name())
+			if cmd.Log() {
+				log.Printf("%s used %s", cmd.Player().Name(), cmd.Name())
+			}
 			if cmd.Name() == "shutdown" {
 				for _, conn := range clients {
 					go func(conn *client.Client) {
@@ -61,6 +63,7 @@ func Run(addr string) {
 		case conn := <-add:
 			clients[conn.Name()] = conn
 		case rmConn := <-rm:
+			log.Printf("%s disconnected", rmConn.Name())
 			delete(clients, rmConn.Name())
 			if shutdown && len(clients) == 0 {
 				return

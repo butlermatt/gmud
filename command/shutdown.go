@@ -5,6 +5,7 @@ func init() {
 		name: "shutdown",
 		help: "shuts down the MUD server.",
 		exec: shutdownCmd,
+		log:  true,
 	})
 }
 
