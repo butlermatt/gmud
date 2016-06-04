@@ -3,11 +3,12 @@ package client
 import (
 	"bufio"
 	"fmt"
-	"github.com/butlermatt/gmud/command"
-	"github.com/butlermatt/gmud/lib"
 	"log"
 	"net"
 	"strings"
+
+	"github.com/butlermatt/gmud/command"
+	"github.com/butlermatt/gmud/lib"
 )
 
 // Client holds the connection and channel
@@ -20,6 +21,8 @@ type Client struct {
 	quit chan bool
 	// Name is the username of the player.
 	name string
+	// Long description of the player.
+	long string
 
 	// rm channel is the channel to remove the client from the server.
 	rm chan<- *Client
@@ -34,7 +37,7 @@ func (c *Client) Prompt(p string) {
 	if p == "" {
 		return
 	}
-	fmt.Fprint(c.Conn, p)
+	fmt.Fprint(c.Conn, "\r"+p)
 }
 
 // toClient manages incoming stream and redirects to the client socket appropriately.
@@ -73,7 +76,12 @@ func (c *Client) Name() string {
 	return c.name
 }
 
-// Room() returns a pointer to the current room occupied by the user.
+// Description returns the description of the player.
+func (c *Client) Description() string {
+	return c.long
+}
+
+// Room returns a pointer to the current room occupied by the user.
 func (c *Client) Room() lib.Holder {
 	return c.room
 }
