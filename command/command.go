@@ -2,10 +2,13 @@ package command
 
 import (
 	"fmt"
+	"github.com/butlermatt/gmud/lib"
 )
 
 type Player interface {
+	lib.Objecter
 	Write(string)
+	Room() lib.Holder
 	Quit()
 }
 

@@ -7,6 +7,7 @@ import (
 	"net"
 	"strings"
 	"github.com/butlermatt/gmud/command"
+	"github.com/butlermatt/gmud/lib"
 )
 
 // Client holds the connection and channel
@@ -18,12 +19,14 @@ type Client struct {
 	// Quit channel will force the client to disconnect.
 	quit chan bool
 	// Name is the username of the player.
-	Name string
+	name string
 
 	// rm channel is the channel to remove the client from the server.
 	rm chan<- *Client
 	// hasQuit flag indicates if the quit has been sent or not.
 	hasQuit bool
+	// room the user is currently located in.
+	room *lib.Room
 }
 
 
@@ -66,6 +69,16 @@ func (c *Client) Quit() {
 	c.quit <- true
 }
 
+// Name returns the name of the client. Fulfills the Objecter interface.
+func (c *Client) Name() string {
+	return c.name
+}
+
+// Room() returns a pointer to the current room occupied by the user.
+func (c *Client) Room() lib.Holder {
+	return c.room
+}
+
 // Handle creates a new Client from the connection and channel to server
 func Handle(conn net.Conn, rm, add chan<- *Client, msg chan<- command.Commander) {
 	fmt.Fprintln(conn, "Welcome to GMud!")
@@ -99,8 +112,11 @@ func Handle(conn net.Conn, rm, add chan<- *Client, msg chan<- command.Commander)
 		log.Println("Error getting name")
 		return
 	}
-	client.Name = name
+	client.name = name
 	add <- client
+
+	lib.DefaultRoom.Add(client)
+	client.room = lib.DefaultRoom
 
 	client.Prompt("> ")
 	scan := bufio.NewScanner(conn)

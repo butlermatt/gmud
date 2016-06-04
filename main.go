@@ -59,9 +59,9 @@ func Run(addr string) {
 			}
 			go cmd.Exec()
 		case conn := <-add:
-			clients[conn.Name] = conn
+			clients[conn.Name()] = conn
 		case rmConn := <-rm:
-			delete(clients, rmConn.Name)
+			delete(clients, rmConn.Name())
 			if shutdown && len(clients) == 0 {
 				return
 			}

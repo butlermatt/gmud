@@ -32,3 +32,13 @@ func (r *Room) Remove(obj Objecter) bool {
 	r.inventory = r.inventory[:len(r.inventory) - 1]
 	return true
 }
+
+func (r *Room) Inventory() []Objecter {
+	return r.inventory
+}
+
+// DefaultRoom is the standard room when all else fails.
+var DefaultRoom = &Room{
+	short: "Empty Void",
+	long:  "You are floating weightlessly in an empty void",
+}
