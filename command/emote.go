@@ -31,7 +31,7 @@ func emoteCmd(user Player, args []string) (ok bool) {
 
 	for _, p := range tmp {
 		if p == user {
-			user.Write(fmt.Sprintf("you %s", str))
+			user.Write(fmt.Sprintf("you emote: %s %s", user.Name(), str))
 		} else {
 			p.Write(fmt.Sprintf("%s %s", user.Name(), str))
 		}
