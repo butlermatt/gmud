@@ -3,11 +3,11 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"github.com/butlermatt/gmud/command"
+	"github.com/butlermatt/gmud/lib"
 	"log"
 	"net"
 	"strings"
-	"github.com/butlermatt/gmud/command"
-	"github.com/butlermatt/gmud/lib"
 )
 
 // Client holds the connection and channel
@@ -15,7 +15,7 @@ type Client struct {
 	// Conn is the raw network connection.
 	Conn net.Conn
 	// Ch channel is the text to send to the client.
-	Ch   chan string
+	Ch chan string
 	// Quit channel will force the client to disconnect.
 	quit chan bool
 	// Name is the username of the player.
@@ -28,7 +28,6 @@ type Client struct {
 	// room the user is currently located in.
 	room *lib.Room
 }
-
 
 // Prompt sends the user a prompt (default is > otherwise specified prompt)
 func (c *Client) Prompt(p string) {
@@ -44,7 +43,7 @@ func (c *Client) toClient() {
 	for {
 		select {
 		case msg := <-c.Ch:
-			fmt.Fprintln(c.Conn, "\r" + msg)
+			fmt.Fprintln(c.Conn, "\r"+msg)
 			c.Prompt("> ")
 		case <-c.quit:
 			c.rm <- c
@@ -85,9 +84,9 @@ func Handle(conn net.Conn, rm, add chan<- *Client, msg chan<- command.Commander)
 
 	client := &Client{
 		Conn: conn,
-		Ch: make(chan string),
+		Ch:   make(chan string),
 		quit: make(chan bool),
-		rm: rm,
+		rm:   rm,
 	}
 
 	go client.toClient()

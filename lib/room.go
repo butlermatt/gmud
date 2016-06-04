@@ -19,7 +19,7 @@ func (r *Room) Remove(obj Objecter) bool {
 	var i int
 	for i = 0; i < len(r.inventory); i++ {
 		if obj == r.inventory[i] {
-			break;
+			break
 		}
 	}
 
@@ -28,8 +28,8 @@ func (r *Room) Remove(obj Objecter) bool {
 	}
 
 	copy(r.inventory[i:], r.inventory[i+1:])
-	r.inventory[len(r.inventory) - 1] = nil
-	r.inventory = r.inventory[:len(r.inventory) - 1]
+	r.inventory[len(r.inventory)-1] = nil
+	r.inventory = r.inventory[:len(r.inventory)-1]
 	return true
 }
 

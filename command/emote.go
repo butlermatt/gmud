@@ -7,13 +7,13 @@ import (
 
 func init() {
 	addCommand(Command{
-		name: "say",
-		help: "allows you to speak to the room.",
-		exec: sayCmd,
+		name: "emote",
+		help: "allows you to send an action to the room.",
+		exec: emoteCmd,
 	})
 }
 
-func sayCmd(user Player, args []string) (ok bool) {
+func emoteCmd(user Player, args []string) (ok bool) {
 	if len(args) == 0 {
 		return false
 	}
@@ -31,9 +31,9 @@ func sayCmd(user Player, args []string) (ok bool) {
 
 	for _, p := range tmp {
 		if p == user {
-			user.Write(fmt.Sprintf("you say: %s", str))
+			user.Write(fmt.Sprintf("you %s", str))
 		} else {
-			p.Write(fmt.Sprintf("%s says: %s", user.Name(), str))
+			p.Write(fmt.Sprintf("%s %s", user.Name(), str))
 		}
 	}
 
