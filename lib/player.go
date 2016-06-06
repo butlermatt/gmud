@@ -1,21 +1,6 @@
 package lib
 
-type Player interface {
-	Objecter
-	Holder
-	// Write sends a message to the Player in a non-blocking way.
-	Write(string)
-	// Send sends a message to the Player in a potentially blocking way.
-	Send(string)
-	// Room returns the room of the current player.
-	Room() *Room
-	// SetRoom sets the player's room.
-	SetRoom(*Room)
-	// Sends a quit
-	Quit()
-}
-
-type PlayerObj struct {
+type PlayerImpl struct {
 	// Name is the username of the player.
 	name string
 	// Long description of the player.
@@ -26,46 +11,49 @@ type PlayerObj struct {
 	inventory []Objecter
 }
 
+// Holdable returns false as players cannot be picked up.
+func (p *PlayerImpl) Holdable() bool { return false }
+
 // Name returns the name of the client. Fulfills the Objecter interface.
-func (p *PlayerObj) Name() string {
+func (p *PlayerImpl) Name() string {
 	return p.name
 }
 
 // SetName sets the player's name.
-func (p *PlayerObj) SetName(name string) {
+func (p *PlayerImpl) SetName(name string) {
 	p.name = name
 }
 
 // Description returns the description of the player.
-func (p *PlayerObj) Description() string {
+func (p *PlayerImpl) Description() string {
 	return p.long
 }
 
 // SetDescription sets the player's description.
-func (p *PlayerObj) SetDescription(desc string) {
+func (p *PlayerImpl) SetDescription(desc string) {
 	p.long = desc
 }
 
 // Room returns a pointer to the current room occupied by the user.
-func (p *PlayerObj) Room() *Room {
+func (p *PlayerImpl) Room() *Room {
 	return p.room
 }
 
 // SetRoom sets the players current room.
-func (p *PlayerObj) SetRoom(room *Room) {
+func (p *PlayerImpl) SetRoom(room *Room) {
 	p.room = room
 }
 
 // Add adds the specified Objecter to the room inventory. Rooms can accept anything
 // except rooms.
-func (p *PlayerObj) Add(obj Objecter) bool {
+func (p *PlayerImpl) Add(obj Objecter) bool {
 	p.inventory = append(p.inventory, obj)
 	return true
 }
 
 // Remove removes the specified object from the room. Returns false if the room
 // does not have the object. Returns true if it was removed from the room inventory.
-func (p *PlayerObj) Remove(obj Objecter) bool {
+func (p *PlayerImpl) Remove(obj Objecter) bool {
 	var i int
 	for i = 0; i < len(p.inventory); i++ {
 		if obj == p.inventory[i] {
@@ -84,6 +72,6 @@ func (p *PlayerObj) Remove(obj Objecter) bool {
 }
 
 // Inventory returns the list objects the user is holding.
-func (p *PlayerObj) Inventory() []Objecter {
+func (p *PlayerImpl) Inventory() []Objecter {
 	return p.inventory
 }

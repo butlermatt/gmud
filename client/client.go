@@ -26,7 +26,7 @@ type Client struct {
 	hasQuit bool
 	// room the user is currently located in.
 
-	lib.PlayerObj
+	lib.PlayerImpl
 }
 
 // Prompt sends the user a prompt (default is > otherwise specified prompt)

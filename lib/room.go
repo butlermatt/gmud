@@ -9,6 +9,9 @@ type Room struct {
 	inventory []Objecter
 }
 
+// Holdable returns false as rooms can not be picked up.
+func (r *Room) Holdable() bool { return false }
+
 // Name returns the short name of the room.
 func (r *Room) Name() string {
 	return r.short
