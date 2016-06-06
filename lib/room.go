@@ -14,9 +14,19 @@ func (r *Room) Name() string {
 	return r.short
 }
 
+// SetName sets the short name of the room.
+func (r *Room) SetName(name string) {
+	r.short = name
+}
+
 // Description returns the short and long description of the room.
 func (r *Room) Description() string {
 	return fmt.Sprintf("%s\r\n%s", r.short, r.long)
+}
+
+// SetDescription sets the long description of the room.
+func (r *Room) SetDescription(desc string) {
+	r.long = desc
 }
 
 // Add adds the specified Objecter to the room inventory. Rooms can accept anything

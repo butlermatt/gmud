@@ -6,18 +6,6 @@ import (
 	"github.com/butlermatt/gmud/lib"
 )
 
-// Player is an in game character player.
-type Player interface {
-	lib.Objecter
-	// Write sends a message to the Player in a non-blocking way.
-	Write(string)
-	// Send sends a message to the Player in a potentially blocking way.
-	Send(string)
-	// Room returns the room of the current player.
-	Room() lib.Holder
-	Quit()
-}
-
 // Commander should be implemented for all commands.
 type Commander interface {
 	// Exec executes the command.
@@ -29,17 +17,17 @@ type Commander interface {
 	// Log returns true if usage of this command should be logged.
 	Log() bool
 	// Player returns the Player of this command.
-	Player() Player
+	Player() lib.Player
 }
 
-type execFunc func(user Player, args []string) (ok bool)
+type execFunc func(user lib.Player, args []string) (ok bool)
 
 // Command holds the command name, help string, User executing command, as well as
 // function to execute and a string slice passed to the command.
 type Command struct {
 	name string
 	help string
-	User Player
+	User lib.Player
 	exec execFunc
 	args []string
 	log  bool
@@ -68,7 +56,7 @@ func (c Command) Log() bool {
 }
 
 // Player returns the player that is executing this command.
-func (c Command) Player() Player {
+func (c Command) Player() lib.Player {
 	return c.User
 }
 
@@ -81,7 +69,7 @@ func addCommand(cmd Command) {
 
 // GetCommand takes the player and their input and creates a new Command instance
 // If the command is invalid, it returns an error.
-func GetCommand(user Player, cmdArgs []string) (Commander, error) {
+func GetCommand(user lib.Player, cmdArgs []string) (Commander, error) {
 	cmd := commands[cmdArgs[0]]
 
 	if cmd.exec == nil {

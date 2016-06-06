@@ -19,17 +19,14 @@ type Client struct {
 	Ch chan string
 	// Quit channel will force the client to disconnect.
 	quit chan bool
-	// Name is the username of the player.
-	name string
-	// Long description of the player.
-	long string
 
 	// rm channel is the channel to remove the client from the server.
 	rm chan<- *Client
 	// hasQuit flag indicates if the quit has been sent or not.
 	hasQuit bool
 	// room the user is currently located in.
-	room *lib.Room
+
+	lib.PlayerObj
 }
 
 // Prompt sends the user a prompt (default is > otherwise specified prompt)
@@ -46,7 +43,7 @@ func (c *Client) toClient() {
 	for {
 		select {
 		case msg := <-c.Ch:
-			fmt.Fprintln(c.Conn, "\r"+msg)
+			fmt.Fprintf(c.Conn, "\r%s\r\n", msg)
 			c.Prompt("> ")
 		case <-c.quit:
 			c.rm <- c
@@ -69,21 +66,6 @@ func (c *Client) Send(str string) {
 func (c *Client) Quit() {
 	c.hasQuit = true
 	c.quit <- true
-}
-
-// Name returns the name of the client. Fulfills the Objecter interface.
-func (c *Client) Name() string {
-	return c.name
-}
-
-// Description returns the description of the player.
-func (c *Client) Description() string {
-	return c.long
-}
-
-// Room returns a pointer to the current room occupied by the user.
-func (c *Client) Room() lib.Holder {
-	return c.room
 }
 
 // Handle creates a new Client from the connection and channel to server
@@ -120,11 +102,13 @@ func Handle(conn net.Conn, rm, add chan<- *Client, msg chan<- command.Commander)
 		return
 	}
 	log.Printf("%v logged in as %s", client.Conn.RemoteAddr(), name)
-	client.name = name
+	client.SetName(name)
+	client.SetDescription(client.Name() + " has a standard description")
+
 	add <- client
 
 	lib.DefaultRoom.Add(client)
-	client.room = lib.DefaultRoom
+	client.SetRoom(lib.DefaultRoom)
 
 	client.Prompt("> ")
 	scan := bufio.NewScanner(conn)

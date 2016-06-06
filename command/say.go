@@ -3,6 +3,8 @@ package command
 import (
 	"fmt"
 	"strings"
+
+	"github.com/butlermatt/gmud/lib"
 )
 
 func init() {
@@ -13,7 +15,7 @@ func init() {
 	})
 }
 
-func sayCmd(user Player, args []string) (ok bool) {
+func sayCmd(user lib.Player, args []string) (ok bool) {
 	if len(args) == 0 {
 		return false
 	}
@@ -21,9 +23,9 @@ func sayCmd(user Player, args []string) (ok bool) {
 	str := strings.Join(args, " ")
 
 	inv := user.Room().Inventory()
-	var tmp []Player
+	var tmp []lib.Player
 	for _, i := range inv {
-		p, ok := i.(Player)
+		p, ok := i.(lib.Player)
 		if ok {
 			tmp = append(tmp, p)
 		}

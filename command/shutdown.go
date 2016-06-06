@@ -1,5 +1,7 @@
 package command
 
+import "github.com/butlermatt/gmud/lib"
+
 func init() {
 	addCommand(Command{
 		name: "shutdown",
@@ -9,7 +11,7 @@ func init() {
 	})
 }
 
-func shutdownCmd(user Player, args []string) (ok bool) {
+func shutdownCmd(user lib.Player, args []string) (ok bool) {
 	if len(args) != 0 {
 		return false
 	}
